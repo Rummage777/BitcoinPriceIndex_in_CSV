@@ -1,0 +1,2 @@
+# BitcoinPriceIndex_in_CSV
+Small project BitcoinPriceIndex_in_CSV
