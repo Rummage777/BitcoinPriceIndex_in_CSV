@@ -1,14 +1,11 @@
 
 import sys
 import argparse
+import datetime
+from datetime import date
 import getdata
 import savedata
-import tests
-
-
-# Set API address
-url = "https://api.coindesk.com/v1/bpi/historical/close.json"
-
+from settings import URL
 
 
 def myAgrumentParser():
@@ -24,32 +21,31 @@ def myAgrumentParser():
             python3 main.py -s 2018-07-01 -e 2018-07-10
             
               ''')
+
+    yesterday = date.today() - datetime.timedelta(days=1)
+
     result.add_argument('-s', '--start', type=str, default='2018-01-01')  # Beginning of the period
-    result.add_argument('-e', '--end', type=str, default='2018-09-21')    # Ending of the period
+    result.add_argument('-e', '--end', type=str, default=yesterday)       # Ending of the period
     result.add_argument('-n', '--name', type=str, default='bpi')          # Set output CSV file name
     return result
 
+def main():
+    ''' Function gets parameters: file name, starting date, ending date
+        Function calls process for getting end saving data in CSV file
+    '''
 
-if __name__ == '__main__':
-    '''Ограничиваем запуск парсера модулем main и передаем значения в переменные Начало периода и Конец периода'''
     result = myAgrumentParser()
     arguments = result.parse_args(sys.argv[1:])
     start_data = arguments.start
     end_data = arguments.end
     filename = arguments.name + '.csv'
 
-    # Используем модуль getdata, для получения данных и сохраняем полученный ответ как string в переменную getbpi
-    getbpi = getdata.get_bpi_data(url, start_data, end_data)
+    # Use getdata module to get data from coindesk.com API
+    bpidata = getdata.get_bpi_data(URL, start_data, end_data)
 
-    # Проверяем, что сервер ответил на запрос
-    if getbpi.status_code == 200:
-        bpi = savedata.save_bpi_data(getbpi.json(), filename)
+    # Use savedata module to create CSV file
+    savedata.save_bpi_data(bpidata, filename)
 
-    else:
-        # Если сервер отдал статус отличный от ОК, останавливаем выполнение программы
-        raise SystemExit("Invalid API response. Server answered {}. Try again later".format(getbpi.status_code))
 
-# TODO: Сделать проверку, что файл записался и что файл не пустой
-print("Csv file is ready. Check current directory for new file named {}".format(filename))
-
-print('File has {} rows.'.format(tests.test_saved_bpi(filename)))
+if __name__ == '__main__':
+    main()

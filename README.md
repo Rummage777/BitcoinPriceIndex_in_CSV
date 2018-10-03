@@ -55,3 +55,11 @@ Example: if you want set name "Result" for your output csv file in your command 
 python3 main.py -n Result
 ```
 Extension csv will be added to chosen name automatically.
+
+
+
+#### TESTS:
+For starting tests in your command line type: 
+```
+python3 tests.py
+```

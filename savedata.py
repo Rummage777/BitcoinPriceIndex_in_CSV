@@ -1,11 +1,12 @@
+
 import csv
+import datetime
 
 
-def save_bpi_data(response, filename):
-    '''Get dict with pairs: "Date: Price" and save it in csv file'''
-
-    # Clean response from odd info
-    result = response['bpi']
+def save_bpi_data(data, filename):
+    '''Get dict with pairs: "Date: Price" and save it in csv file
+    data contains dict: {'2018-11-09': 6545.76465}
+    '''
 
     # Set headers for tabs
     tabs = ['Date', 'Price']
@@ -14,24 +15,25 @@ def save_bpi_data(response, filename):
     with open(filename, 'w') as csvfile:
         writer = csv.writer(csvfile)
 
-        # writing headers
+        # Writing headers
+        # TODO: use method write header / Существует только для DictWriter, а он нам не подходит
         writer.writerow(tabs)
 
-        # writing the data rows
-        for item in list(result):
-            a = []
+        # Writing the data rows
+        for item in data.keys():
+            row = []
 
             # Convert date from YYYY-MM-DD to DD.MM.YYYY output format
-            date = list(reversed(item.split('-')))
-            date = '.'.join(date)
-            a.append(date)
+            date = [int(x) for x in item.split('-')]
+            formatted_date = (datetime.date(date[0], date[1], date[2])).strftime("%d.%m.%y")
+            row.append(formatted_date)
 
             # Convert price into $120.24 format
-            price = result[item]
-            price = '$'+ str(format(price, '.2f'))
-            a.append(price)
+            price = data[item]
+            price = '$' + str(format(price, '.2f'))
+            row.append(price)
 
-            # Write a line into csv
-            writer.writerow(a)
+            # Write prepared line into csv file
+            writer.writerow(row)
 
-    return filename
+        print("Writing CSV file complete. Check current directory for new file named {}".format(filename))
