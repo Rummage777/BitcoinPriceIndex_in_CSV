@@ -2,7 +2,6 @@
 import sys
 import argparse
 import datetime
-from datetime import date
 import getdata
 import savedata
 from settings import URL
@@ -22,7 +21,7 @@ def myAgrumentParser():
             
               ''')
 
-    yesterday = date.today() - datetime.timedelta(days=1)
+    yesterday = datetime.date.today() - datetime.timedelta(days=1)
 
     result.add_argument('-s', '--start', type=str, default='2018-01-01')  # Beginning of the period
     result.add_argument('-e', '--end', type=str, default=yesterday)       # Ending of the period

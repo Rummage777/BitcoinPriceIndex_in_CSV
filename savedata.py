@@ -16,20 +16,19 @@ def save_bpi_data(data, filename):
         writer = csv.writer(csvfile)
 
         # Writing headers
-        # TODO: use method write header / Существует только для DictWriter, а он нам не подходит
         writer.writerow(tabs)
 
         # Writing the data rows
-        for item in data.keys():
+        for date, price in data.items():
             row = []
 
             # Convert date from YYYY-MM-DD to DD.MM.YYYY output format
-            date = [int(x) for x in item.split('-')]
-            formatted_date = (datetime.date(date[0], date[1], date[2])).strftime("%d.%m.%y")
+            # Вместо ручного парсинга использовать встроенную функцию datetime strptime
+            nonformatted_date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
+            formatted_date = nonformatted_date.strftime("%d.%m.%y")
             row.append(formatted_date)
 
             # Convert price into $120.24 format
-            price = data[item]
             price = '$' + str(format(price, '.2f'))
             row.append(price)
 

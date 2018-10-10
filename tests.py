@@ -1,4 +1,3 @@
-# TODO: создать тесты
 """
 Задание:
 0) Описать запуск тестов в README
@@ -28,23 +27,20 @@ def test_dict_key():
 
     result = getdata.get_bpi_data(URL, start_data, end_data)
 
-    for item in result.keys():
-        if type(item) is not str:
+
+    for date, price in result.items():
+        if type(date) is not str:
             passed = False
-        if type(result[item]) is not float:
+        if type(price) is not float:
             passed = False
-        if item not in expected_data:
+        if date not in expected_data:
+            passed = False
+        if price not in expected_data.values():
             passed = False
 
-    for item in expected_data.keys():
-        if item not in result:
+    for item in expected_data.items():
+        if item not in result.items():
             passed = False
-
-    if '2018-01-06' in result.keys():
-        passed = False
-
-    if result['2018-01-01'] != 13412.44:
-        passed = False
 
     if passed == True:
         print("Test #1 successfully passed")
